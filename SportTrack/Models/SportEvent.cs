@@ -1,6 +1,6 @@
 ﻿namespace SportTrack.Models
 {
-    public class Event
+    public class SportEvent
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }

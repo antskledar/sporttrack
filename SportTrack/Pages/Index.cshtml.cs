@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace SportTrack.Pages;
+
+
 
 public class IndexModel : PageModel
 {
