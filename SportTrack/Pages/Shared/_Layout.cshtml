@@ -28,8 +28,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Sports">Sports</a>
+                        </li>
+
+
                         @using Microsoft.AspNetCore.Identity
                         @inject SignInManager<ApplicationUser> SignInManager
+
+                                @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-page="/Favorites">Favorites</a>
+        </li>
+    }
+
                         @inject UserManager<ApplicationUser> UserManager
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {

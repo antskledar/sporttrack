@@ -234,7 +234,8 @@ namespace SportTrack.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TeamId = table.Column<int>(type: "int", nullable: true),
                     SportId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -242,8 +243,8 @@ namespace SportTrack.Migrations
                 {
                     table.PrimaryKey("PK_UserFavorites", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserFavorites_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_UserFavorites_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -319,11 +320,6 @@ namespace SportTrack.Migrations
                 column: "SportId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFavorites_ApplicationUserId",
-                table: "UserFavorites",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserFavorites_SportId",
                 table: "UserFavorites",
                 column: "SportId");
@@ -332,6 +328,11 @@ namespace SportTrack.Migrations
                 name: "IX_UserFavorites_TeamId",
                 table: "UserFavorites",
                 column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserFavorites_UserId",
+                table: "UserFavorites",
+                column: "UserId");
         }
 
         /// <inheritdoc />

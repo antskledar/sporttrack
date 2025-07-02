@@ -40,15 +40,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sport.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HomeTeam.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AwayTeam.Id)
-            </td>
+                <td>
+                    @item.Sport?.Name
+                </td>
+                <td>
+                    @item.HomeTeam?.Name
+                </td>
+                <td>
+                    @item.AwayTeam?.Name
+                </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.HomeScore)
             </td>
