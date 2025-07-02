@@ -1,0 +1,129 @@
+﻿@page
+@model SportTrack.Pages.Administrator.SportEvents.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<h4>Sport Event</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="SportEvent.Date" class="control-label"></label>
+                <input asp-for="SportEvent.Date" class="form-control" />
+                <span asp-validation-for="SportEvent.Date" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SportEvent.SportId" class="control-label"></label>
+                <select id="sportDropdown" asp-for="SportEvent.SportId" class="form-control" asp-items='ViewData["SportId"] as SelectList'></select>
+
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SportEvent.HomeTeamId" class="control-label"></label>
+                <select id="homeDropdown" asp-for="SportEvent.HomeTeamId" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SportEvent.AwayTeamId" class="control-label"></label>
+                <select id="awayDropdown" asp-for="SportEvent.AwayTeamId" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SportEvent.HomeScore" class="control-label"></label>
+                <input asp-for="SportEvent.HomeScore" class="form-control" />
+                <span asp-validation-for="SportEvent.HomeScore" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SportEvent.AwayScore" class="control-label"></label>
+                <input asp-for="SportEvent.AwayScore" class="form-control" />
+                <span asp-validation-for="SportEvent.AwayScore" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var allTeams = [];
+
+        $("#sportDropdown").change(function () {
+            var sportId = $(this).val();
+            if (!sportId) return;
+
+            $.getJSON("?handler=TeamsBySport&sportId=" + sportId, function (data) {
+                allTeams = data;
+                updateTeamDropdowns();
+            });
+        });
+
+        $("#homeDropdown").change(function () {
+            updateTeamDropdowns();
+        });
+
+        $("#awayDropdown").change(function () {
+            updateTeamDropdowns();
+        });
+
+        function updateTeamDropdowns() {
+            var homeId = $("#homeDropdown").val();
+            var awayId = $("#awayDropdown").val();
+
+            // Home dropdown
+            $("#homeDropdown").empty();
+            $.each(allTeams, function (i, team) {
+                if (team.id != awayId) {
+                    $("#homeDropdown").append($('<option>', {
+                        value: team.id,
+                        text: team.name
+                    }));
+                }
+            });
+            if (homeId && $("#homeDropdown option[value='" + homeId + "']").length > 0) {
+                $("#homeDropdown").val(homeId);
+            }
+
+            // Away dropdown
+            $("#awayDropdown").empty();
+            $.each(allTeams, function (i, team) {
+                if (team.id != homeId) {
+                    $("#awayDropdown").append($('<option>', {
+                        value: team.id,
+                        text: team.name
+                    }));
+                }
+            });
+            if (awayId && $("#awayDropdown option[value='" + awayId + "']").length > 0) {
+                $("#awayDropdown").val(awayId);
+            }
+        }
+    </script>
+}

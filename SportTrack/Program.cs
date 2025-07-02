@@ -71,4 +71,13 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DbInitializer.SeedRolesAndAdminAsync(services);
+}
+
+
 app.Run();

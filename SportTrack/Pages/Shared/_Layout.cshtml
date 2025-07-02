@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using SportTrack.Models
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +28,30 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        @using Microsoft.AspNetCore.Identity
+                        @inject SignInManager<ApplicationUser> SignInManager
+                        @inject UserManager<ApplicationUser> UserManager
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Administrator/Sports">Admin - Sports</a>
+                            </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Administrator/Teams">Admin - Teams</a>
+                            </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Administrator/SportEvents">Admin - Events</a>
+                            </li>
+                        }
+
+
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

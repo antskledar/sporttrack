@@ -10,7 +10,7 @@ namespace SportTrack.Models
         public int SportId { get; set; }
         public Sport? Sport { get; set; }
 
-        public ICollection<Event>? HomeEvents { get; set; }
-        public ICollection<Event>? AwayEvents { get; set; }
+        public ICollection<SportEvent>? HomeEvents { get; set; }
+        public ICollection<SportEvent>? AwayEvents { get; set; }
     }
 }

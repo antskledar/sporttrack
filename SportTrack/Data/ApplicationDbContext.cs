@@ -12,7 +12,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         : base(options) {}
     public DbSet<Sport> Sports => Set<Sport>(); 
     public DbSet<Team> Teams => Set<Team>();    
-    public DbSet<Event> Events => Set<Event>();
+    public DbSet<SportEvent> Events => Set<SportEvent>();
     public DbSet<UserFavorite> UserFavorites => Set<UserFavorite>();
 
 
@@ -21,21 +21,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(builder);
 
         // Event ⇄ HomeTeam
-        builder.Entity<Event>()
+        builder.Entity<SportEvent>()
                .HasOne(e => e.HomeTeam)
                .WithMany(t => t.HomeEvents)
                .HasForeignKey(e => e.HomeTeamId)
                .OnDelete(DeleteBehavior.Restrict);
 
         // Event ⇄ AwayTeam
-        builder.Entity<Event>()
+        builder.Entity<SportEvent>()
                .HasOne(e => e.AwayTeam)
                .WithMany(t => t.AwayEvents)
                .HasForeignKey(e => e.AwayTeamId)
                .OnDelete(DeleteBehavior.Restrict);
 
         // Event ⇄ Sport
-        builder.Entity<Event>()
+        builder.Entity<SportEvent>()
                .HasOne(e => e.Sport)
                .WithMany(s => s.Events)
                .HasForeignKey(e => e.SportId);
