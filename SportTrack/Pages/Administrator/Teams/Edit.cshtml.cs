@@ -38,7 +38,7 @@ namespace SportTrack.Pages.Administrator.Teams
                 return NotFound();
             }
             Team = team;
-           ViewData["SportId"] = new SelectList(_context.Sports, "Id", "Id");
+           ViewData["SportId"] = new SelectList(_context.Sports, "Id", "Name");
             return Page();
         }
 
