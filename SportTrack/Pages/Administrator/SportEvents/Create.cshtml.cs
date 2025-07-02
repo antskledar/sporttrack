@@ -24,34 +24,57 @@ namespace SportTrack.Pages.Administrator.SportEvents
         [BindProperty]
         public SportEvent SportEvent { get; set; } = default!;
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
+            // Ako je null, inicijaliziraj
+            if (SportEvent == null)
+                SportEvent = new SportEvent();
+
             ViewData["SportId"] = new SelectList(_context.Sports, "Id", "Name");
-            // Prvi load: prazni dropdownovi za timove
-            ViewData["HomeTeamId"] = new SelectList(Enumerable.Empty<SelectListItem>());
-            ViewData["AwayTeamId"] = new SelectList(Enumerable.Empty<SelectListItem>());
+
+            if (SportEvent.SportId != 0)
+            {
+                var teams = await _context.Teams
+                    .Where(t => t.SportId == SportEvent.SportId)
+                    .ToListAsync();
+
+                ViewData["HomeTeamId"] = new SelectList(teams, "Id", "Name", SportEvent.HomeTeamId);
+                ViewData["AwayTeamId"] = new SelectList(teams, "Id", "Name", SportEvent.AwayTeamId);
+            }
+            else
+            {
+                ViewData["HomeTeamId"] = new SelectList(Enumerable.Empty<SelectListItem>());
+                ViewData["AwayTeamId"] = new SelectList(Enumerable.Empty<SelectListItem>());
+            }
+
             return Page();
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                ViewData["HomeTeamId"] = new SelectList(_context.Teams, "Id", "Name", SportEvent.HomeTeamId);
-                ViewData["AwayTeamId"] = new SelectList(_context.Teams, "Id", "Name", SportEvent.AwayTeamId);
+                var teams = await _context.Teams
+                    .Where(t => t.SportId == SportEvent.SportId)
+                    .ToListAsync();
+
+                ViewData["HomeTeamId"] = new SelectList(teams, "Id", "Name", SportEvent.HomeTeamId);
+                ViewData["AwayTeamId"] = new SelectList(teams, "Id", "Name", SportEvent.AwayTeamId);
                 ViewData["SportId"] = new SelectList(_context.Sports, "Id", "Name", SportEvent.SportId);
                 return Page();
             }
 
-            // Dohvati sve timove za odabrani sport
-            var teamsInSport = await _context.Teams.Where(t => t.SportId == SportEvent.SportId).ToListAsync();
+            var teamsInSport = await _context.Teams
+                .Where(t => t.SportId == SportEvent.SportId)
+                .ToListAsync();
 
-            // Ako ima više od jednog tima, provjeri da home i away nisu isti
             if (teamsInSport.Count > 1 && SportEvent.HomeTeamId == SportEvent.AwayTeamId)
             {
-                TempData["ErrorMessage"] = "Ne možete odabrati isti tim kao domaći i gostujući tim ako postoji više od jednog tima u sportu.";
-                ViewData["HomeTeamId"] = new SelectList(_context.Teams, "Id", "Name", SportEvent.HomeTeamId);
-                ViewData["AwayTeamId"] = new SelectList(_context.Teams, "Id", "Name", SportEvent.AwayTeamId);
+                TempData["ErrorMessage"] = "Ne možete odabrati isti tim kao domaći i gostujući ako postoji više od jednog tima u sportu.";
+
+                ViewData["HomeTeamId"] = new SelectList(teamsInSport, "Id", "Name", SportEvent.HomeTeamId);
+                ViewData["AwayTeamId"] = new SelectList(teamsInSport, "Id", "Name", SportEvent.AwayTeamId);
                 ViewData["SportId"] = new SelectList(_context.Sports, "Id", "Name", SportEvent.SportId);
                 return Page();
             }
@@ -72,8 +95,9 @@ namespace SportTrack.Pages.Administrator.SportEvents
             if (recentEvent != null)
             {
                 TempData["ErrorMessage"] = $"Event već postoji unutar 24 sata! ID: {recentEvent.Id}, Datum: {recentEvent.Date}, Sport: {recentEvent.Sport.Name}, Home: {recentEvent.HomeTeam.Name}, Away: {recentEvent.AwayTeam.Name}";
-                ViewData["HomeTeamId"] = new SelectList(_context.Teams, "Id", "Name", SportEvent.HomeTeamId);
-                ViewData["AwayTeamId"] = new SelectList(_context.Teams, "Id", "Name", SportEvent.AwayTeamId);
+
+                ViewData["HomeTeamId"] = new SelectList(teamsInSport, "Id", "Name", SportEvent.HomeTeamId);
+                ViewData["AwayTeamId"] = new SelectList(teamsInSport, "Id", "Name", SportEvent.AwayTeamId);
                 ViewData["SportId"] = new SelectList(_context.Sports, "Id", "Name", SportEvent.SportId);
                 return Page();
             }
@@ -84,9 +108,7 @@ namespace SportTrack.Pages.Administrator.SportEvents
             return RedirectToPage("./Index");
         }
 
-
-
-        // AJAX handler za dohvat timova po sportu
+        // AJAX handler
         public async Task<JsonResult> OnGetTeamsBySportAsync(int sportId)
         {
             var teams = await _context.Teams
