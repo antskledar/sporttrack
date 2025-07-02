@@ -12,8 +12,8 @@ using SportTrack.Data;
 namespace SportTrack.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250627100610_ExtendedUser")]
-    partial class ExtendedUser
+    [Migration("20250630205315_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -234,7 +234,24 @@ namespace SportTrack.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("SportTrack.Models.Event", b =>
+            modelBuilder.Entity("SportTrack.Models.Sport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sports");
+                });
+
+            modelBuilder.Entity("SportTrack.Models.SportEvent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -271,23 +288,6 @@ namespace SportTrack.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("SportTrack.Models.Sport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sports");
-                });
-
             modelBuilder.Entity("SportTrack.Models.Team", b =>
                 {
                     b.Property<int>("Id")
@@ -320,7 +320,7 @@ namespace SportTrack.Migrations
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SportId")
                         .HasColumnType("int");
@@ -328,13 +328,17 @@ namespace SportTrack.Migrations
                     b.Property<int?>("TeamId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("SportId");
 
                     b.HasIndex("TeamId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserFavorites");
                 });
@@ -390,7 +394,7 @@ namespace SportTrack.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SportTrack.Models.Event", b =>
+            modelBuilder.Entity("SportTrack.Models.SportEvent", b =>
                 {
                     b.HasOne("SportTrack.Models.Team", "AwayTeam")
                         .WithMany("AwayEvents")
@@ -430,12 +434,6 @@ namespace SportTrack.Migrations
 
             modelBuilder.Entity("SportTrack.Models.UserFavorite", b =>
                 {
-                    b.HasOne("SportTrack.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SportTrack.Models.Sport", "Sport")
                         .WithMany()
                         .HasForeignKey("SportId");
@@ -443,6 +441,12 @@ namespace SportTrack.Migrations
                     b.HasOne("SportTrack.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
+
+                    b.HasOne("SportTrack.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Sport");
 

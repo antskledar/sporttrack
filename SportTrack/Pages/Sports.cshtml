@@ -1,0 +1,58 @@
+﻿@page
+@model SportsModel
+
+<h2>Sports</h2>
+
+<form method="get" asp-page="Sports" class="mb-3">
+    <input type="text" name="SportQuery" value="@Model.SportQuery" placeholder="Search sports..." class="form-control" />
+    <button type="submit" class="btn btn-secondary mt-2">Search</button>
+
+    @if (Model.SelectedSportId.HasValue)
+    {
+        <input type="hidden" name="SelectedSportId" value="@Model.SelectedSportId" />
+    }
+</form>
+
+<ul>
+    @foreach (var sport in Model.Sports)
+    {
+        <li>
+            <a asp-page="Sports" asp-route-SelectedSportId="@sport.Id" asp-route-SportQuery="@Model.SportQuery">
+                @sport.Name
+            </a>
+        </li>
+    }
+</ul>
+
+@if (Model.SelectedSportId.HasValue)
+{
+    var selectedSport = Model.Sports.FirstOrDefault(s => s.Id == Model.SelectedSportId);
+    <h3>Teams for @selectedSport?.Name</h3>
+
+    @if (Model.Teams != null && Model.Teams.Any())
+    {
+        <ul>
+            @foreach (var team in Model.Teams)
+            {
+                <li>
+                    @team.Name
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form method="post" asp-page-handler="AddFavorite" asp-route-teamId="@team.Id" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-primary">Add to favorites</button>
+                        </form>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p><em>No teams for this sport.</em></p>
+    }
+}
+else
+{
+    <p><em>Select a sport to view its teams.</em></p>
+}

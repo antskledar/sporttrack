@@ -1,0 +1,38 @@
+﻿@if (Model.Sport != null)
+{
+    <h2>Teams for @Model.Sport.Name</h2>
+
+    <form method="get" asp-page="Teams">
+        <input type="hidden" name="sportId" value="@Model.Sport.Id" />
+        <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="Search team..." />
+        <button type="submit" class="btn btn-sm btn-secondary">Filter</button>
+    </form>
+
+    @if (Model.Teams.Count > 0)
+
+    {
+        <ul>
+            @foreach (var team in Model.Teams)
+            {
+                <li>
+                    @team.Name
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form method="post" asp-page-handler="AddFavorite" asp-route-teamId="@team.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-primary">Add to favorites</button>
+                        </form>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No teams for this sport.</p>
+    }
+    <a asp-page="/Sports">Back to Sports</a>
+}
+else
+{
+    <p>Sport not found.</p>
+}
