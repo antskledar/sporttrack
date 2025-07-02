@@ -16,9 +16,7 @@ public class FavoritesModel : PageModel
         _userManager = userManager;
     }
 
-
     public IList<UserFavorite> Favorites { get; set; } = new List<UserFavorite>();
-
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -26,8 +24,9 @@ public class FavoritesModel : PageModel
             return Challenge();
 
         var userId = _userManager.GetUserId(User);
+
         Favorites = await _context.UserFavorites
-            .Where(f => f.UserId == userId)
+            .Where(f => f.ApplicationUserId == userId)
             .Include(f => f.Team)
             .ThenInclude(t => t.Sport)
             .ToListAsync();
@@ -35,7 +34,6 @@ public class FavoritesModel : PageModel
         return Page();
     }
 
-   
     public async Task<IActionResult> OnPostRemoveFavoriteAsync(int favoriteId)
     {
         var fav = await _context.UserFavorites.FindAsync(favoriteId);

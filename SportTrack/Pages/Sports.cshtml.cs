@@ -55,13 +55,13 @@ public class SportsModel : PageModel
         var userId = _userManager.GetUserId(User);
 
         var already = await _context.UserFavorites
-            .AnyAsync(f => f.UserId == userId && f.TeamId == teamId);
+            .AnyAsync(f => f.ApplicationUserId == userId && f.TeamId == teamId);
 
         if (!already)
         {
             _context.UserFavorites.Add(new UserFavorite
             {
-                UserId = userId,
+                ApplicationUserId = userId,
                 TeamId = teamId
             });
             await _context.SaveChangesAsync();

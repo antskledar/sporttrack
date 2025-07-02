@@ -11,9 +11,7 @@ namespace SportTrack.Models
         public string ApplicationUserId { get; set; } = string.Empty;
 
         [ForeignKey("ApplicationUserId")]
-        public string? UserId { get; set; }
-
-        public ApplicationUser? User { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
 
         public int? TeamId { get; set; }
         public Team? Team { get; set; }
