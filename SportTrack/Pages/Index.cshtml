@@ -5,6 +5,56 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.SportEvent[0].Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SportEvent[0].Sport)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SportEvent[0].HomeTeam)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SportEvent[0].AwayTeam)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SportEvent[0].HomeScore)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SportEvent[0].AwayScore)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SportEvent)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sport.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HomeTeam.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AwayTeam.Name)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HomeScore)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AwayScore)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
