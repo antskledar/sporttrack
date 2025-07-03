@@ -26,10 +26,12 @@ public class FavoritesModel : PageModel
         var userId = _userManager.GetUserId(User);
 
         Favorites = await _context.UserFavorites
-            .Where(f => f.ApplicationUserId == userId)
-            .Include(f => f.Team)
-            .ThenInclude(t => t.Sport)
-            .ToListAsync();
+    .Where(f => f.ApplicationUserId == userId)
+    .Include(f => f.Team)
+        .ThenInclude(t => t.Sport)
+    .Include(f => f.Sport) 
+    .ToListAsync();
+
 
         return Page();
     }

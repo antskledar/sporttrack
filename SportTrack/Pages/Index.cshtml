@@ -1,33 +1,50 @@
 ﻿@page
 @model IndexModel
+@using SportTrack.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.SportEvent[0].Date)</th>
-                <th>@Html.DisplayNameFor(model => model.SportEvent[0].Sport)</th>
-                <th>Match</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SportEvent)
-            {
-                <tr>
-                    <td>@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
-                    <td>@item.Sport.Name</td>
-                    <td>
-                        @item.HomeTeam.Name
-                        <span style="background-color: #f0f0f0; border-radius: 8px; padding: 4px 10px; font-weight: bold; margin: 0 8px;">
-                            @item.HomeScore&nbsp;:&nbsp;@item.AwayScore
-                        </span>
-                        @item.AwayTeam.Name
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+@functions {
+    bool IsTeamFavorite(int teamId) => Model.UserFavorites.Any(f => f.TeamId == teamId);
+    bool IsSportFavorite(int sportId) => Model.UserFavorites.Any(f => f.SportId == sportId);
+}
+
+<div class="container">
+    @foreach (var item in Model.SportEvent)
+    {
+        <div class="event-card animate-slide">
+            <div class="event-header">
+                <span>@item.Date.ToString("dd.MM.yyyy HH:mm")</span>
+                <span class="sport-badge">
+                    @item.Sport.Name
+                    <form method="post" asp-page-handler="ToggleFavorite" asp-route-type="sport" asp-route-id="@item.Sport.Id" style="display:inline;">
+                        <button type="submit" class="star-btn @(IsSportFavorite(item.Sport.Id) ? "star-filled" : "")" title="Toggle favorite">★</button>
+                    </form>
+                </span>
+            </div>
+
+            <div class="event-body flex-align">
+                <div class="team-block left-block">
+                    <form method="post" asp-page-handler="ToggleFavorite" asp-route-type="team" asp-route-id="@item.HomeTeam.Id" style="display:inline;">
+                        <button type="submit" class="star-btn @(IsTeamFavorite(item.HomeTeam.Id) ? "star-filled" : "")" title="Toggle favorite">★</button>
+                    </form>
+                    <span class="team-name">@item.HomeTeam.Name</span>
+                </div>
+
+                <div class="score-box">
+                    @item.HomeScore : @item.AwayScore
+                </div>
+
+                <div class="team-block right-block">
+                    <span class="team-name">@item.AwayTeam.Name</span>
+                    <form method="post" asp-page-handler="ToggleFavorite" asp-route-type="team" asp-route-id="@item.AwayTeam.Id" style="display:inline;">
+                        <button type="submit" class="star-btn @(IsTeamFavorite(item.AwayTeam.Id) ? "star-filled" : "")" title="Toggle favorite">★</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
 </div>

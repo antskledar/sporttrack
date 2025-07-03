@@ -4,7 +4,7 @@
 <h2>Your Favorites</h2>
 @if (Model.Favorites.Count == 0)
 {
-    <p>You have no favorite teams.</p>
+    <p>You have no favorite teams or sports.</p>
 }
 else
 {
@@ -12,7 +12,15 @@ else
         @foreach (var fav in Model.Favorites)
         {
             <li>
-                @fav.Team.Name (@fav.Team.Sport.Name)
+                @if (fav.Team != null)
+                {
+                    @($"{fav.Team.Name} ({fav.Team.Sport?.Name})")
+                }
+                else if (fav.Sport != null)
+                {
+                    @fav.Sport.Name
+                }
+
                 <form method="post" asp-page-handler="RemoveFavorite" asp-route-favoriteId="@fav.Id" style="display:inline;">
                     <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                 </form>
