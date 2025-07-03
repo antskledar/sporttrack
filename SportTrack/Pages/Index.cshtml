@@ -5,53 +5,26 @@
 }
 
 <div class="text-center">
-    <table class="table">
-        <thead>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.SportEvent[0].Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SportEvent[0].Sport)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SportEvent[0].HomeTeam)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SportEvent[0].AwayTeam)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SportEvent[0].HomeScore)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SportEvent[0].AwayScore)
-                </th>
-                <th></th>
+                <th>@Html.DisplayNameFor(model => model.SportEvent[0].Date)</th>
+                <th>@Html.DisplayNameFor(model => model.SportEvent[0].Sport)</th>
+                <th>Match</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.SportEvent)
             {
                 <tr>
+                    <td>@item.Date.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@item.Sport.Name</td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Sport.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HomeTeam.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AwayTeam.Name)
-                    </td>
-
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HomeScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AwayScore)
+                        @item.HomeTeam.Name
+                        <span style="background-color: #f0f0f0; border-radius: 8px; padding: 4px 10px; font-weight: bold; margin: 0 8px;">
+                            @item.HomeScore&nbsp;:&nbsp;@item.AwayScore
+                        </span>
+                        @item.AwayTeam.Name
                     </td>
                 </tr>
             }
